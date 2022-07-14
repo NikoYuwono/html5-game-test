@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <title>Roll-A-Ball-NativeDemo</title>
+    <script async
+      data-ad-client="ca-pub-123456789"
+      data-adbreak-test="on"
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+    </script>
+
+    <script>window.adsbygoogle = window.adsbygoogle || [];
+      const adBreak =  adConfig = function(o) {adsbygoogle.push(o);}
+    </script>
+  </head>
+  <body style="text-align: center">
+    <canvas id="unity-canvas" width=960 height=600 style="width: 960px; height: 600px; background: #231F20"></canvas>
+    <script src="Build/okapi-test.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/okapi-test.data.br",
+        frameworkUrl: "Build/okapi-test.framework.js.br",
+        codeUrl: "Build/okapi-test.wasm.br",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Roll-A-Ball-NativeDemo",
+        productVersion: "1.0",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      }).then((unityInstance) => {
+        myGameInstance = unityInstance;
+        console.log('Library Arg');
+        console.log(myGameInstance.Module.H5GamesAds);
+      });
+    </script>
+    <script>
+      var showRewardedAdFn;
+      function showInterstitialAd(type, name) {
+        adBreak({
+          type: type,
+          name: name,
+          beforeAd: () => {
+            myGameInstance.Module.H5GamesAds.TriggerBeforeAd();
+          },
+          afterAd: () => {
+            myGameInstance.Module.H5GamesAds.TriggerAfterAd();
+          },
+          adBreakDone: (placementInfo) => {
+            myGameInstance.Module.H5GamesAds.TriggerAdBreakDone();
+          },
+        });
+      }
+      function showRewardedAd(name) {
+        adBreak({
+          type: 'reward',
+          name: name,
+          beforeAd: () => {
+            myGameInstance.Module.H5GamesAds.TriggerBeforeRewardedAd();
+          },
+          afterAd: () => {
+            myGameInstance.Module.H5GamesAds.TriggerAfterRewardedAd();
+          },
+          adBreakDone: (placementInfo) => {
+            myGameInstance.Module.H5GamesAds.TriggerRewardedAdBreakDone();
+          },
+          beforeReward: (showAdFn) => {
+            showRewardedAdFn = showAdFn;
+            myGameInstance.Module.H5GamesAds.TriggerBeforeReward();
+          },
+          adDismissed: () => {
+            myGameInstance.Module.H5GamesAds.TriggerAdDismissed();
+          },
+          adViewed: () => {
+            myGameInstance.Module.H5GamesAds.TriggerAdViewed();
+          },
+        });
+      }
+      function triggerShowRewardedAdFn() {
+        console.log("***** triggerShowRewardedAdFn *****");     
+        showRewardedAdFn();
+      }
+    </script>
+  </body>
+</html>
